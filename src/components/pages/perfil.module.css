@@ -6,6 +6,9 @@
   background-color: #ffffff;
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 15%;
+  padding-top: 6%;
+
 }
 
 .profileContainer:hover {

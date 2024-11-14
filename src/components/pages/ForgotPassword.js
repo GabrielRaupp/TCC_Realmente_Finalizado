@@ -23,6 +23,7 @@ const ForgotPassword = () => {
       setMessage('Erro ao solicitar redefinição de senha. Tente novamente.');
     }
   };
+  
 
   return (
     <div className={styles.container}>

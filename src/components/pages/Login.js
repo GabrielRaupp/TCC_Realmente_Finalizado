@@ -64,6 +64,10 @@ const Login = () => {
     navigate('/ForgotPassword');
   };
 
+  const handleDeletCont = () => {
+    navigate('/deletarConta');
+  };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); 
   };
@@ -124,6 +128,9 @@ const Login = () => {
           </form>
           <button className={styles.resetPasswordButton} onClick={handlePasswordReset}>
             Redefinir Senha
+          </button>
+          <button className={styles.resetPasswordButton} onClick={handleDeletCont}>
+            Excluir conta          
           </button>
         </div>
       )}

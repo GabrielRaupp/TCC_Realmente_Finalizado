@@ -81,6 +81,37 @@ app.delete('/horarios/:id', async (req, res) => {
   }
 });
 
+// Rota para excluir a conta do usuário
+app.delete('/deletarConta', async (req, res) => {
+  try {
+    const { email } = req.body; // Recebe o email na requisição
+
+    // Verifica se o email foi fornecido
+    if (!email) {
+      return res.status(400).json({ message: 'É necessário fornecer um email.' });
+    }
+
+    // Encontra o usuário pelo email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    // Exclui todos os horários associados ao usuário
+    await Horario.deleteMany({ user: user._id });
+
+    // Exclui o usuário
+    await User.findByIdAndDelete(user._id);
+
+    res.json({ message: 'Conta excluída com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao excluir conta:', error);
+    res.status(500).json({ message: 'Erro ao excluir conta.' });
+  }
+});
+
+
 // Rota para obter um horário específico pelo ID
 app.get('/horarios/:id', async (req, res) => {
   try {

@@ -13,6 +13,8 @@ import Cadastro from './components/pages/Cadastro';
 import ForgotPassword from './components/pages/ForgotPassword';
 import ResetarSenha from './components/pages/ResetarSenha';
 import Perfil from './components/pages/perfil';
+import Deletar from './components/pages/deletarConta';
+
 
 function App() {
   return (
@@ -29,6 +31,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Cadastro" element={<Cadastro />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/deletarConta" element={<Deletar />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetarSenha/:token" element={<ResetarSenha />} />
           

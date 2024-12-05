@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importação do hook useNavigate
 import InputMask from 'react-input-mask';
 import styles from './Cadastro.module.css';
 
 const Cadastro = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [campus, setCampus] = useState('');
   const [telefone, setTelefone] = useState('');
+
+  const navigate = useNavigate(); // Inicialização do useNavigate
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,7 +22,7 @@ const Cadastro = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password, email, telefone, campus }), 
+        body: JSON.stringify({ username, password, email, telefone, campus }),
       });
 
       const data = await response.json();
@@ -28,13 +31,14 @@ const Cadastro = () => {
       }
 
       alert('Usuário cadastrado com sucesso!');
+      navigate('/login'); // Redireciona para a página de login
     } catch (error) {
       alert(error.message);
     }
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); 
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -67,7 +71,7 @@ const Cadastro = () => {
           <label htmlFor="password">Senha:</label>
           <div className={styles.passwordWrapper}>
             <input
-              type={showPassword ? 'text' : 'password'} 
+              type={showPassword ? 'text' : 'password'}
               id="password"
               placeholder="Digite sua senha"
               value={password}
@@ -77,7 +81,7 @@ const Cadastro = () => {
               className={styles.passwordToggleIcon}
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? '👁️' : '🙈'} 
+              {showPassword ? '👁️' : '🙈'}
             </span>
           </div>
         </div>
@@ -101,7 +105,6 @@ const Cadastro = () => {
             onChange={(e) => setCampus(e.target.value)}
             required
           >
-            <option value="">Selecione um campus</option>
             <option value="">Selecione um campus</option>
             <option value="IFC Campus Araquari">IFC Campus Araquari</option>
             <option value="IFC Campus Avançado Abelardo Luz">IFC Campus Avançado Abelardo Luz</option>

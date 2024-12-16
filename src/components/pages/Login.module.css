@@ -1,4 +1,4 @@
-/* Estilos do componente de login */
+
 .logincontainer {
   max-width: 500px;
   margin: 80px auto;
@@ -8,24 +8,25 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   background-color: #f9f9f9;
   font-family: 'Arial', sans-serif;
+  text-align: center; 
 }
 
 .logincontainer h2 {
-  text-align: center;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .logincontainer label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-size: 14px;
   color: #666;
+  text-align: left; 
 }
 
-.logincontainer input[type="text"], 
+.logincontainer input[type="text"],
 .logincontainer input[type="password"] {
   width: 100%;
   height: 45px;
@@ -36,19 +37,20 @@
   transition: border-color 0.3s;
 }
 
-.logincontainer input[type="text"]:focus, 
+.logincontainer input[type="text"]:focus,
 .logincontainer input[type="password"]:focus {
   border-color: #b39a2a;
   outline: none;
 }
 
-/* Wrapper da senha */
+
 .passwordWrapper {
   position: relative;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .passwordWrapper input {
-  width: 100%;
   padding-right: 40px;
 }
 
@@ -59,6 +61,7 @@
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 20px;
+  color: #666;
 }
 
 .submitButton {
@@ -69,7 +72,7 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
-  text-align: justify;
+  width: 100%; 
   transition: background-color 0.3s;
 }
 
@@ -77,32 +80,47 @@
   background-color: #9c851e;
 }
 
-.resetPasswordButton {
-  background-color: #007bff;
-  color: #fff;
+.resetPasswordButton,
+.resetPasswordButton2 {
+  width: 100%; 
+  margin-top: 10px;
   padding: 10px 15px;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
   font-size: 14px;
+  cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 10px;
+}
+
+.resetPasswordButton {
+  background-color: #007bff;
+  color: #fff;
 }
 
 .resetPasswordButton:hover {
   background-color: #0056b3;
 }
 
-/* Estilos do profile card */
+.resetPasswordButton2 {
+  background-color: #be0039;
+  color: #fff;
+}
+
+.resetPasswordButton2:hover {
+  background-color: #8b002e;
+}
+
 .profilecard {
   display: flex;
   align-items: center;
+  justify-content: center; 
   border: 1px solid #ddd;
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   padding: 15px;
   margin-top: 20px;
+  text-align: center; 
 }
 
 .usericon {
@@ -112,7 +130,7 @@
 }
 
 .profileinfo {
-  text-align: left;
+  text-align: center;
   flex-grow: 1;
 }
 

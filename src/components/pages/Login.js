@@ -129,7 +129,7 @@ const Login = () => {
           <button className={styles.resetPasswordButton} onClick={handlePasswordReset}>
             Redefinir Senha
           </button>
-          <button className={styles.resetPasswordButton} onClick={handleDeletCont}>
+          <button className={styles.resetPasswordButton2} onClick={handleDeletCont}>
             Excluir conta          
           </button>
         </div>

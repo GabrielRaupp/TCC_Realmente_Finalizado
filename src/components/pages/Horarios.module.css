@@ -1,39 +1,78 @@
 .horario_container {
-  padding: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 0;
+  justify-content: flex-start;
+}
+
+.horario_card {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin: 0;
+}
+
+/* Corrige o espaçamento quando há exatamente 2 elementos */
+.horario_container > .horario_card:nth-child(2) {
+  margin-right: 0; /* Garante que o último cartão na linha não tenha margem extra */
+}
+
+.horario_container:has(.horario_card:nth-child(2)) {
+  justify-content: space-between; /* Ajusta a distribuição quando houver apenas dois cartões */
 }
 
 .title_container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 3em;
-  margin-top: 2em;
+  align-items: center;
+  margin-bottom: 2em;
+  margin-top: 1em;
 }
 
 .linkbutton {
   background-color: black;
-  padding: 52pt;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .horario_container {
-    padding: 1.5em; 
+    gap: 0.5em;
+    justify-content: center;
   }
 
   .linkbutton {
-    padding: 32pt; 
+    padding: 8px 16px;
   }
 }
 
 @media (max-width: 480px) {
   .title_container {
     flex-direction: column;
-    align-items: flex-start; 
+    align-items: flex-start;
+  }
+
+  .horario_card {
+    width: 100%;
   }
 }
 
-.addHorarioButton
-{
+.addHorarioButton {
   border-radius: 8px;
   border: none;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.addHorarioButton:hover {
+  background-color: #0056b3;
 }

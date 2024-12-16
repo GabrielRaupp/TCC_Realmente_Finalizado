@@ -417,6 +417,52 @@ app.post('/horarios', async (req, res) => {
   }
 });
 
+// Logica da conta mestre Professor
+(async () => {
+  try {
+    const existingProfessor = await User.findOne({ username: 'Professores' });
+    if (!existingProfessor) {
+      const hashedPassword = await bcrypt.hash('professor', 10);
+      const newProfessor = new User({
+        username: 'Professores',
+        password: hashedPassword,
+        email: 'professoresAlguacoisa@gmail.com', 
+        telefone: '123456789',
+        campus: 'Admin',
+      });
+      await newProfessor.save();
+      console.log('Conta Professores criada com sucesso!');
+    } else {
+      console.log('Conta Professores já existe.');
+    }
+  } catch (error) {
+    console.error('Erro ao criar conta de Professores:', error);
+  }
+})();
+
+// Rota de todas as contas e horários que só o professor vê
+app.get('/contas', async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'Você precisa estar logado.' });
+    }
+
+    const user = await User.findById(req.session.userId);
+    if (!user || user.username !== 'Professores') {
+      return res.status(403).json({ message: 'Acesso negado.' });
+    }
+
+    const users = await User.find({}, 'username email campus createdAt');
+    const horarios = await Horario.find().populate('user', 'username email');
+
+    res.json({ users, horarios });
+  } catch (error) {
+    console.error('Erro ao listar contas:', error);
+    res.status(500).json({ message: 'Erro ao listar contas.' });
+  }
+});
+
+
 
     
 app.use(express.static(path.join(__dirname, 'build')));

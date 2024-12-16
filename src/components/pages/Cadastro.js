@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importação do hook useNavigate
+import { Link } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; 
 import InputMask from 'react-input-mask';
 import styles from './Cadastro.module.css';
 
@@ -124,6 +125,8 @@ const Cadastro = () => {
             <option value="IFC Campus Videira">IFC Campus Videira</option>
           </select>
         </div>
+
+        <Link to="/login" className={styles.option}>Já tenho conta</Link>
 
         <button className={styles.btnSubmit} type="submit">Cadastrar</button>
       </form>

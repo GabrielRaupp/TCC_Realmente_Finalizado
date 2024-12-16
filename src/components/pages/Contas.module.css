@@ -1,0 +1,95 @@
+.contas_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  padding: 1em;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.contas_card {
+  width: 22%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.5em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f8f8f8;
+  margin: 0.5em 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contas_card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.contas_card h4 {
+  font-size: 1.5em;
+  color: #ffbb33;
+  margin-bottom: 1em;
+  background-color: #222;
+  padding: 0.4em;
+  border-radius: 5px;
+  text-align: center;
+  border: 2px solid #000;
+}
+
+.contas_card p {
+  font-size: 1em;
+  color: #34495e;
+  margin-bottom: 1em;
+}
+
+.contas_card p span {
+  font-weight: bold;
+}
+
+.contas_card_actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.2em;
+}
+
+.contas_card_actions button,
+.contas_card_actions a {
+  border: none;
+  text-decoration: none;
+  background-color: #222;
+  color: #ffbb33;
+  font-size: 0.9em;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contas_card_actions button:hover,
+.contas_card_actions a:hover {
+  background-color: #ffbb33;
+  color: #222;
+}
+
+.contas_card_actions svg {
+  margin-right: 0.5em;
+  fill: #222;
+  transition: fill 0.3s ease;
+}
+
+.contas_card_actions button:hover svg,
+.contas_card_actions a:hover svg {
+  fill: #fff;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .contas_card {
+    width: 48%;
+  }
+}
+
+@media (max-width: 480px) {
+  .contas_card {
+    width: 100%;
+  }
+}

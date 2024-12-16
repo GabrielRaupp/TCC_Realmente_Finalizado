@@ -14,6 +14,7 @@ import ForgotPassword from './components/pages/ForgotPassword';
 import ResetarSenha from './components/pages/ResetarSenha';
 import Perfil from './components/pages/perfil';
 import Deletar from './components/pages/deletarConta';
+import Contas from './components/pages/Contas'; 
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/deletarConta" element={<Deletar />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetarSenha/:token" element={<ResetarSenha />} />
+          <Route path="/Contas" element={<Contas />} />
           
         </Routes>
       </Container>

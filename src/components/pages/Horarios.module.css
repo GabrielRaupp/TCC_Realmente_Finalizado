@@ -16,13 +16,12 @@
   margin: 0;
 }
 
-/* Corrige o espaçamento quando há exatamente 2 elementos */
 .horario_container > .horario_card:nth-child(2) {
-  margin-right: 0; /* Garante que o último cartão na linha não tenha margem extra */
+  margin-right: 0; 
 }
 
 .horario_container:has(.horario_card:nth-child(2)) {
-  justify-content: space-between; /* Ajusta a distribuição quando houver apenas dois cartões */
+  justify-content: space-between; 
 }
 
 .title_container {

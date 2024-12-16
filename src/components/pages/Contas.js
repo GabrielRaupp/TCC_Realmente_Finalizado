@@ -5,6 +5,7 @@ import styles from './Contas.module.css';
 function Contas() {
   const [data, setData] = useState({ users: [], horarios: [] });
   const [loading, setLoading] = useState(true);
+  const [visibleHorarios, setVisibleHorarios] = useState({}); 
 
   useEffect(() => {
     axios.get('/contas', { withCredentials: true })
@@ -18,13 +19,19 @@ function Contas() {
       });
   }, []);
 
+  const toggleHorarios = (userId) => {
+    setVisibleHorarios(prevState => ({
+      ...prevState,
+      [userId]: !prevState[userId] 
+    }));
+  };
+
   if (loading) {
     return <p>Carregando...</p>;
   }
 
   return (
     <div className={styles.contas_container}>
-      <h1>Contas</h1>
       
       <div>
         <h2>Usuários:</h2>
@@ -36,21 +43,25 @@ function Contas() {
                 <p><span>Email:</span> {user.email}</p>
                 <p><span>Campus:</span> {user.campus}</p>
                 <p><span>Data de criação:</span> {new Date(user.createdAt).toLocaleDateString()}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+                {/* Botão para alternar a visibilidade dos horários */}
+                <button onClick={() => toggleHorarios(user._id)}>
+                  {visibleHorarios[user._id] ? 'Ocultar horários' : 'Mostrar horários'}
+                </button>
 
-      <div>
-        <h2>Horários:</h2>
-        <div className={styles.contas_card}>
-          <ul>
-            {data.horarios.map(horario => (
-              <li key={horario._id}>
-                <p><span>Nome:</span> {horario.name}</p>
-                <p><span>Categoria:</span> {horario.category}</p>
-                <p><span>Usuário:</span> {horario.user.username}</p>
+                {visibleHorarios[user._id] && (
+                  <div>
+                    <h3>Horários:</h3>
+                    <ul>
+                      {data.horarios.filter(horario => horario.user._id === user._id).map(horario => (
+                        <li key={horario._id}>
+                          <p><span>Nome:</span> {horario.name}</p>
+                          <p><span>Categoria:</span> {horario.category}</p>
+                          <p><span>Usuário:</span> {horario.user.username}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styles from './HorarioCard.module.css';
 import { BsPencil, BsFillTrashFill } from 'react-icons/bs';
 
-function HorarioCard({ id, name, horario, category, handleRemove }) {
+function HorarioCard({ id, name, horario, category, disciplina, handleRemove }) {
   const remove = async (e) => {
     e.preventDefault();
     await handleRemove(id);  
@@ -27,6 +27,11 @@ function HorarioCard({ id, name, horario, category, handleRemove }) {
           Categoria: {category || 'Sem categoria'}
         </span>
       </p>
+      {disciplina && (
+        <p>
+          <span>Disciplina:</span> {disciplina}
+        </p>
+      )}
       <div className={styles.project_card_actions}>
         <Link to={'/horario/' + id}>
           <BsPencil className={styles.icon} /> Editar

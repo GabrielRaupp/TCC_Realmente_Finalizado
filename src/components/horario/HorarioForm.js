@@ -6,7 +6,9 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
   const [name, setName] = useState('');
   const [horarios, setHorarios] = useState('');
   const [category, setCategory] = useState('');
-  const [avisoAntecedencia, setAvisoAntecedencia] = useState(''); // Novo estado para aviso de antecedência
+  const [discipline, setDiscipline] = useState(''); 
+  const [showDiscipline, setShowDiscipline] = useState(false);
+  const [avisoAntecedencia, setAvisoAntecedencia] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -15,14 +17,19 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
       setName(horarioData.name);
       setHorarios(horarioData.horarios);
       setCategory(horarioData.category || '');
-      setAvisoAntecedencia(horarioData.avisoAntecedencia || ''); // Pré-carrega o aviso se houver
+      setAvisoAntecedencia(horarioData.avisoAntecedencia || '');
     }
   }, [horarioData]);
+
+  useEffect(() => {
+    const categoriesWithDiscipline = ['Apresentação', 'Prova', 'Recuperação', 'Trabalho', 'Atividade'];
+    setShowDiscipline(categoriesWithDiscipline.includes(category));
+  }, [category]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !horarios || !category || !avisoAntecedencia) {
+    if (!name || !horarios || !category || !avisoAntecedencia || (showDiscipline && !discipline)) {
       setErrorMessage('Todos os campos são obrigatórios');
       return;
     }
@@ -39,6 +46,7 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
         name,
         horarios: parsedHorario.toISOString(),
         category,
+        discipline: showDiscipline ? discipline : null,
         avisoAntecedencia,
       };
 
@@ -55,9 +63,10 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
       setName('');
       setHorarios('');
       setCategory('');
-      setAvisoAntecedencia(''); 
+      setDiscipline('');
+      setAvisoAntecedencia('');
       setErrorMessage('');
-      setSuccessMessage('Horário Criado'); 
+      setSuccessMessage('Horário Criado');
 
       if (onSubmitSuccess) {
         onSubmitSuccess(response.data);
@@ -114,6 +123,41 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
             <option value="Trabalho">Trabalho</option>
           </select>
         </div>
+        {showDiscipline && (
+          <div>
+            <label htmlFor="discipline">Disciplina:</label>
+            <select
+              id="discipline"
+              value={discipline}
+              onChange={(e) => setDiscipline(e.target.value)}
+              required
+            >
+              <option value="">Selecione uma disciplina</option>
+              <option value="TCC">TCC</option>
+              <option value="Português">Português</option>
+              <option value="Matemática">Matemática</option>
+              <option value="Química">Química</option>
+              <option value="Biologia">Biologia</option>
+              <option value="Artes">Artes</option>
+              <option value="Fisica">Fisica</option>
+              <option value="Geografia">Geografia</option>
+              <option value="Filosofia">Filosofia</option>
+              <option value="Sociologia">Sociologia</option>
+              <option value="Topicos de Ciencias Humanas">Topicos de Ciencias Humanas</option>
+              <option value="Inglês">Inglês</option>
+              <option value="Espanhol">Espanhol</option>
+              <option value="Oratoria">Oratoria</option>
+              <option value="ArtDesenvolvimento Web (1 Á 3)es">Desenvolvimento Web (1 Á 3)</option>
+              <option value="Introdução a Computação">Introdução a Computação</option>
+              <option value="Programação (1 Á 2)">Programação (1 Á 2)</option>
+              <option value="Desenvolvimento para Dispositivos Moveis">Desenvolvimento para Dispositivos Moveis</option>
+              <option value="Matematica Aplicada">Matematica Aplicada</option>
+              <option value="Metodologia CIentifica">Metodologia CIentifica</option>
+              <option value="Redes Para Computação">Redes Para Computação</option>
+              <option value="Banco De Dados">Banco De Dados</option>
+            </select>
+          </div>
+        )}
         <div>
           <label htmlFor="avisoAntecedencia">Aviso de Antecedência:</label>
           <select
@@ -125,35 +169,12 @@ const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
             <option value="">Selecione o tempo de antecedência</option>
             <option value="15">15 minutos</option>
             <option value="30">30 minutos</option>
-
             <option value="60">1 hora</option>
             <option value="90">1 hora e meia</option>
-
             <option value="120">2 horas</option>
-            <option value="150">2 horas e meia</option>
-
-            <option value="180">3 horas</option>
-            <option value="210">3 horas e meia</option>
-
-            <option value="240">4 horas</option>
-            <option value="270">4 horas e meia</option>
-
-            <option value="300">5 horas</option>
-            <option value="330">5 horas e meia</option>
-
-            <option value="360">6 horas</option>
-            <option value="390">6 horas e meia</option>
-
             <option value="1440">1 dia</option>
             <option value="2880">2 dias</option>
-            <option value="4320">3 dias</option>
-            <option value="5760">4 dias</option>
-            <option value="7200">5 dias</option>
-
-
-
             <option value="10080">1 semana</option>
-
           </select>
         </div>
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}

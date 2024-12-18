@@ -44,6 +44,7 @@ const HorarioSchema = new mongoose.Schema({
   name: { type: String, required: true },
   horarios: { type: String, required: true },
   category: { type: String, required: true },
+  disciplina: { type: String }, 
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
@@ -366,7 +367,7 @@ const sendEmail = async (to, subject, text) => {
 // Rota para registrar um novo horário
 app.post('/horarios', async (req, res) => {
   try {
-    const { name, horarios, category, avisoAntecedencia } = req.body;
+    const { name, horarios, category, avisoAntecedencia, disciplina } = req.body;
 
     if (!name || !horarios || !category) {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
@@ -385,14 +386,22 @@ app.post('/horarios', async (req, res) => {
       name,
       horarios,
       category,
+      disciplina, 
       user: user._id,
     });
-    await newHorario.save();
+    
+    await newHorario.save()
+      .then(() => res.status(201).json({ message: 'Horário registrado com sucesso!' }))
+      .catch(err => {
+        console.error('Erro ao salvar horário:', err);
+        res.status(500).json({ message: 'Erro ao salvar horário.' });
+      });
 
+      
     await sendEmail(
       user.email,
       'Novo horário cadastrado',
-      `Olá ${user.username},\n\nVocê cadastrou um novo horário:\n\nNome: ${name}\nHorário: ${horarios}\nCategoria: ${category}\n\nObrigado por usar nosso serviço!`
+      `Olá ${user.username},\n\nVocê cadastrou um novo horário:\n\nNome: ${name}\nHorário: ${horarios}\nCategoria: ${category}\nDisciplina: ${disciplina}\n\nObrigado por usar nosso serviço!`
     );
 
     console.log(`Email enviado para ${user.email} sobre o novo horário.`);
@@ -416,6 +425,7 @@ app.post('/horarios', async (req, res) => {
     res.status(500).json({ message: 'Erro ao registrar horário e enviar notificações.' });
   }
 });
+
 
 // Logica da conta mestre Professor
 (async () => {
@@ -459,6 +469,32 @@ app.get('/contas', async (req, res) => {
   } catch (error) {
     console.error('Erro ao listar contas:', error);
     res.status(500).json({ message: 'Erro ao listar contas.' });
+  }
+});
+
+app.post('/horarios/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, horarios, category, avisoAntecedencia } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    const newHorario = new Horario({
+      name,
+      horarios,
+      category,
+      avisoAntecedencia,
+      user: user._id,
+    });
+
+    await newHorario.save();
+    res.status(201).json(newHorario);
+  } catch (error) {
+    console.error('Erro ao adicionar horário:', error);
+    res.status(500).json({ message: 'Erro ao adicionar horário.' });
   }
 });
 

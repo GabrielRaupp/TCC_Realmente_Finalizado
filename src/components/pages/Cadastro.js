@@ -11,8 +11,9 @@ const Cadastro = () => {
   const [email, setEmail] = useState('');
   const [campus, setCampus] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [userType, setUserType] = useState(''); // Estado para o tipo de conta
 
-  const navigate = useNavigate(); // Inicialização do useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +24,7 @@ const Cadastro = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password, email, telefone, campus }),
+        body: JSON.stringify({ username, password, email, telefone, campus, userType }),
       });
 
       const data = await response.json();
@@ -32,7 +33,7 @@ const Cadastro = () => {
       }
 
       alert('Usuário cadastrado com sucesso!');
-      navigate('/login'); // Redireciona para a página de login
+      navigate('/login');
     } catch (error) {
       alert(error.message);
     }
@@ -99,15 +100,30 @@ const Cadastro = () => {
         </div>
 
         <div className={styles.campo}>
-          <label htmlFor="campus">Campus:</label>
+          <label htmlFor="userType">Tipo de Conta:</label>
           <select
-            id="campus"
-            value={campus}
-            onChange={(e) => setCampus(e.target.value)}
+            id="userType"
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
             required
           >
-            <option value="">Selecione um campus</option>
-            <option value="IFC Campus Araquari">IFC Campus Araquari</option>
+            <option value="">Selecione o tipo de conta</option>
+            <option value="Usuario">Usuário</option>
+            <option value="Estudante">Estudante</option>
+          </select>
+        </div>
+
+        {/* Exibe o campo de seleção de campus apenas para estudantes */}
+        {userType === 'Estudante' && (
+          <div className={styles.campo}>
+            <label htmlFor="campus">Campus:</label>
+            <select
+              id="campus"
+              value={campus}
+              onChange={(e) => setCampus(e.target.value)}
+              required
+            >
+             <option value="IFC Campus Araquari">IFC Campus Araquari</option>
             <option value="IFC Campus Avançado Abelardo Luz">IFC Campus Avançado Abelardo Luz</option>
             <option value="IFC Campus Avançado Brusque">IFC Campus Avançado Brusque</option>
             <option value="IFC Campus Blumenau">IFC Campus Blumenau</option>
@@ -125,6 +141,7 @@ const Cadastro = () => {
             <option value="IFC Campus Videira">IFC Campus Videira</option>
           </select>
         </div>
+        )}
 
         <Link to="/login" className={styles.option}>Já tenho conta</Link>
 

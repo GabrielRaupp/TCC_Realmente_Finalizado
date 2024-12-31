@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
-const Login = () => {
+const Login = ({ setAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -16,8 +16,9 @@ const Login = () => {
     if (storedIsLoggedIn === 'true' && storedUsername) {
       setIsLoggedIn(true);
       setLoggedInUsername(storedUsername);
+      setAuthenticated(true);
     }
-  }, []);
+  }, [setAuthenticated]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,13 +39,14 @@ const Login = () => {
       const data = await response.json();
       setIsLoggedIn(true);
       setLoggedInUsername(username);
+      setAuthenticated(true);
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('username', username);
-      localStorage.setItem('email', data.email);       
-      localStorage.setItem('createdAt', data.createdAt); 
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('createdAt', data.createdAt);
       alert('Login bem-sucedido!');
 
-      window.location.reload();
+      navigate('/');
     } catch (error) {
       alert(error.message);
     }
@@ -53,6 +55,7 @@ const Login = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setLoggedInUsername('');
+    setAuthenticated(false);
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('username');
     localStorage.removeItem('email');
@@ -69,7 +72,7 @@ const Login = () => {
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); 
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -108,7 +111,7 @@ const Login = () => {
             <div className={styles.passwordWrapper}>
               <label htmlFor="password">Senha:</label>
               <input
-                type={showPassword ? 'text' : 'password'} 
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -119,7 +122,7 @@ const Login = () => {
                 className={styles.passwordToggleIcon}
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? '👁️' : '🙈'} 
+                {showPassword ? '👁️' : '🙈'}
               </span>
             </div>
             <button type="submit" className={styles.submitButton}>
@@ -130,7 +133,7 @@ const Login = () => {
             Redefinir Senha
           </button>
           <button className={styles.resetPasswordButton2} onClick={handleDeletCont}>
-            Excluir conta          
+            Excluir conta
           </button>
         </div>
       )}

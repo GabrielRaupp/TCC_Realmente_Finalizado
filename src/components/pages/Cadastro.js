@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import { useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import styles from './Cadastro.module.css';
 
 const Cadastro = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [campus, setCampus] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [userType, setUserType] = useState(''); // Estado para o tipo de conta
-
+  const [userType, setUserType] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!username || !password || !email || (userType === 'Estudante' && !campus)) {
+      setErrorMessage('Todos os campos obrigatórios devem ser preenchidos.');
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:3000/register', {
@@ -35,7 +39,7 @@ const Cadastro = () => {
       alert('Usuário cadastrado com sucesso!');
       navigate('/login');
     } catch (error) {
-      alert(error.message);
+      setErrorMessage(error.message);
     }
   };
 
@@ -55,6 +59,7 @@ const Cadastro = () => {
             placeholder="Digite seu nome de usuário"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
+            required
           />
         </div>
 
@@ -66,6 +71,7 @@ const Cadastro = () => {
             placeholder="Digite seu email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
+            required
           />
         </div>
 
@@ -78,6 +84,7 @@ const Cadastro = () => {
               placeholder="Digite sua senha"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              required
             />
             <span
               className={styles.passwordToggleIcon}
@@ -113,7 +120,6 @@ const Cadastro = () => {
           </select>
         </div>
 
-        {/* Exibe o campo de seleção de campus apenas para estudantes */}
         {userType === 'Estudante' && (
           <div className={styles.campo}>
             <label htmlFor="campus">Campus:</label>
@@ -122,7 +128,7 @@ const Cadastro = () => {
               value={campus}
               onChange={(e) => setCampus(e.target.value)}
               required
-            >
+              >
              <option value="IFC Campus Araquari">IFC Campus Araquari</option>
             <option value="IFC Campus Avançado Abelardo Luz">IFC Campus Avançado Abelardo Luz</option>
             <option value="IFC Campus Avançado Brusque">IFC Campus Avançado Brusque</option>
@@ -142,6 +148,8 @@ const Cadastro = () => {
           </select>
         </div>
         )}
+
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         <Link to="/login" className={styles.option}>Já tenho conta</Link>
 

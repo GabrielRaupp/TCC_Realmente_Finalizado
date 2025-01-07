@@ -1,133 +1,128 @@
-import React, { useState, useEffect } from 'react';
-import styles from './Home.module.css';
-import savings from '../../img/savings.svg';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import styles from './Horario.module.css';
+import Loading from '../layout/Loading';
+import Container from '../layout/Container';
+import HorarioForm from '../horario/HorarioForm';
+import Message from '../layout/Message';
 
-import LinkButton from '../layout/LinkButton';
-
-function Home({ isAuthenticated, onAddHorario, onRegisterUser, onLogin }) {
-  const [isListening, setIsListening] = useState(false);
-  const [command, setCommand] = useState('');
+function Horario() {
+  const { id } = useParams();
+  const [horario, setHorario] = useState({});
+  const [showHorarioForm, setShowHorarioForm] = useState(false);
   const [message, setMessage] = useState('');
+  const [type, setType] = useState('success');
 
   useEffect(() => {
-    if (!('webkitSpeechRecognition' in window)) {
-      alert('Seu navegador não suporta a API de reconhecimento de voz.');
-    }
-  }, []);
-
-  const startListening = () => {
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = 'pt-BR';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.toLowerCase();
-      setCommand(transcript);
-      executeCommand(transcript);
-    };
-
-    recognition.onerror = (event) => {
-      console.error('Erro de reconhecimento: ', event.error);
-      setMessage('Erro ao reconhecer o comando.');
-    };
-
-    recognition.start();
-  };
-
-  const executeCommand = (transcript) => {
-    const intent = interpretCommand(transcript);
-
-    switch (intent.action) {
-      case 'login':
-        const { username, password } = intent.data;
-        if (username && password) {
-          onLogin(username, password);
-          setMessage(`Tentando logar com ${username}.`);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/horarios/${id}`);
+        const data = await response.json();
+        console.log('Dados do horário:', data);
+        if (data) {
+          setHorario(data);
         } else {
-          setMessage('Faltam informações para efetuar login.');
+          setMessage('Horário não encontrado!');
+          setType('error');
         }
-        break;
-      case 'adicionar_horario':
-        if (!isAuthenticated) {
-          setMessage('Você precisa estar logado para adicionar horários.');
-          return;
-        }
-        setMessage('Por favor, forneça os detalhes do horário.');
-        onAddHorario({
-          name: 'Aula de Matemática',
-          horarios: new Date().toISOString(),
-          category: 'Prova',
-          avisoAntecedencia: '30',
-        });
-        break;
-      case 'registrar_usuario':
-        setMessage('Por favor, diga o nome de usuário.');
-        onRegisterUser({
-          username: 'novo_usuario',
-          password: 'senha123',
-        });
-        break;
-      case 'bem_vindo':
-        setMessage('Olá! Bem-vindo ao IntelAgend!');
-        break;
-      case 'ajuda':
-        setMessage('Você pode adicionar horários, registrar uma conta ou logar.');
-        break;
-      default:
-        setMessage('Comando não reconhecido.');
-        break;
+      } catch (error) {
+        console.error("Erro ao buscar horário:", error);
+        setMessage('Erro ao buscar o horário!');
+        setType('error');
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const editPost = async (updatedHorario) => {
+    try {
+      console.log("Atualizando horário com:", updatedHorario);
+      const response = await fetch(`http://localhost:3000/horarios/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedHorario),
+      });
+
+      const data = await response.json();
+      console.log("Resposta da atualização:", data);
+
+      if (response.ok) {
+        setHorario(updatedHorario);
+        setShowHorarioForm(false);
+        setMessage('Horário atualizado com sucesso!');
+        setType('success');
+      } else {
+        setMessage('Erro ao atualizar o horário!');
+        setType('error');
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar horário:", error);
+      setMessage('Erro ao atualizar o horário!');
+      setType('error');
     }
   };
 
-  const interpretCommand = (transcript) => {
-    const normalizedTranscript = transcript.trim();
-    if (normalizedTranscript.startsWith('login')) {
-      const [_, username, password] = normalizedTranscript.split(' ');
-      return { action: 'login', data: { username, password } };
-    }
+  const deleteHorario = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/horarios/${id}`, {
+        method: 'DELETE',
+      });
 
-    const intents = [
-      { keywords: ['adicionar', 'horário', 'criar evento'], action: 'adicionar_horario' },
-      { keywords: ['registrar', 'criar conta', 'cadastrar usuário'], action: 'registrar_usuario' },
-      { keywords: ['bem-vindo', 'olá', 'oi'], action: 'bem_vindo' },
-      { keywords: ['ajuda', 'instruções', 'como usar'], action: 'ajuda' },
-    ];
-
-    for (const { keywords, action } of intents) {
-      if (keywords.some((keyword) => normalizedTranscript.includes(keyword))) {
-        return { action };
+      if (response.ok) {
+        setMessage('Horário excluído com sucesso!');
+        setType('success');
+      } else {
+        setMessage('Erro ao excluir o horário!');
+        setType('error');
       }
+    } catch (error) {
+      console.error("Erro ao excluir horário:", error);
+      setMessage('Erro ao excluir o horário!');
+      setType('error');
     }
-
-    return { action: 'unknown' };
   };
 
   return (
-    <section className={styles.home_container}>
-      <h1>
-        Bem-vindo ao <span>IntelAgend</span>
-      </h1>
-      <p>Crie sua conta para começar a usufruir do nosso sistema!</p>
-      <LinkButton className={styles.create} to="/Cadastro" text="Criar conta " />
-      <img src={savings} alt="Savings" />
-
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <button
-          onClick={startListening}
-          disabled={isListening}
-          className={styles.voice_button}
-        >
-          {isListening ? 'Ouvindo...' : 'Clique para falar'}
-        </button>
-        <p>Comando reconhecido: <b>{command}</b></p>
-        <p>Status: {message}</p>
-      </div>
-    </section>
+    <>
+      {message && <Message type={type} msg={message} />}
+      {horario.name ? (
+        <div className={styles.horario_details}>
+          <Container customClass="column">
+            <div className={styles.details_container}>
+              <h1>Horário: {horario.name}</h1>
+              <button className={styles.btn} onClick={() => setShowHorarioForm(!showHorarioForm)}>
+                {showHorarioForm ? 'Fechar' : 'Editar horário'}
+              </button>
+              <button className={styles.btn} onClick={deleteHorario}>
+                Excluir horário
+              </button>
+              <div className={styles.horario_info}>
+                {!showHorarioForm ? (
+                  <>
+                    <p>
+                      <span>Categoria:</span> {horario.category || 'Sem categoria'}
+                    </p>
+                    <p>
+                      <span>Horário:</span> {horario.horarios || 'Não disponível'}
+                    </p>
+                  </>
+                ) : (
+                  <HorarioForm
+                    handleSubmit={editPost}
+                    btnText="Concluir edição"
+                    horarioData={horario}
+                  />
+                )}
+              </div>
+            </div>
+          </Container>
+        </div>
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 }
 
-export default Home;
+export default Horario;

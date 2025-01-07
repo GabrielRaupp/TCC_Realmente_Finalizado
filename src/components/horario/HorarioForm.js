@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './HorarioForm.module.css';
 
-const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
+const HorarioForm = ({ onSubmitSuccess, horarioData }) => {
   const [name, setName] = useState('');
   const [horarios, setHorarios] = useState('');
   const [category, setCategory] = useState('');
-  const [discipline, setDiscipline] = useState('');
+  const [discipline, setDiscipline] = useState(''); 
   const [showDiscipline, setShowDiscipline] = useState(false);
   const [avisoAntecedencia, setAvisoAntecedencia] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,21 +17,9 @@ const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
       setName(horarioData.name);
       setHorarios(horarioData.horarios);
       setCategory(horarioData.category || '');
-      setDiscipline(horarioData.discipline || '');
       setAvisoAntecedencia(horarioData.avisoAntecedencia || '');
     }
   }, [horarioData]);
-
-  useEffect(() => {
-    if (voiceCommandData) {
-      setName(voiceCommandData.name || '');
-      setHorarios(voiceCommandData.horarios || '');
-      setCategory(voiceCommandData.category || '');
-      setAvisoAntecedencia(voiceCommandData.avisoAntecedencia || '');
-    }
-  }, [voiceCommandData]);
-  
-
 
   useEffect(() => {
     const categoriesWithDiscipline = ['Apresentação', 'Prova', 'Recuperação', 'Trabalho', 'Atividade'];
@@ -46,18 +34,31 @@ const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
       return;
     }
 
+    const parsedHorario = new Date(horarios);
+    if (isNaN(parsedHorario)) {
+      setErrorMessage('Por favor, forneça uma data/hora válida.');
+      return;
+    }
+
     try {
+      let response;
       const horarioPayload = {
         name,
-        horarios: new Date(horarios).toISOString(),
+        horarios: parsedHorario.toISOString(),
         category,
         discipline: showDiscipline ? discipline : null,
         avisoAntecedencia,
       };
 
-      await axios.post('/horarios', horarioPayload, {
-        withCredentials: true,
-      });
+      if (horarioData) {
+        response = await axios.put(`/horarios/${horarioData._id}`, horarioPayload, {
+          withCredentials: true,
+        });
+      } else {
+        response = await axios.post('/horarios', horarioPayload, {
+          withCredentials: true,
+        });
+      }
 
       setName('');
       setHorarios('');
@@ -67,7 +68,10 @@ const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
       setErrorMessage('');
       setSuccessMessage('Horário Criado');
 
-      if (onSubmitSuccess) onSubmitSuccess();
+      if (onSubmitSuccess) {
+        onSubmitSuccess(response.data);
+      }
+
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Erro ao salvar o horário:', error);
@@ -77,7 +81,7 @@ const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
 
   return (
     <div className={styles.form}>
-      <h2>Novo Horário</h2>
+      <h2>{horarioData ? 'Editar Horário' : 'Novo Horário'}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Nome:</label>
@@ -135,22 +139,22 @@ const HorarioForm = ({ onSubmitSuccess, horarioData, voiceCommandData }) => {
               <option value="Química">Química</option>
               <option value="Biologia">Biologia</option>
               <option value="Artes">Artes</option>
-              <option value="Física">Física</option>
+              <option value="Fisica">Fisica</option>
               <option value="Geografia">Geografia</option>
               <option value="Filosofia">Filosofia</option>
               <option value="Sociologia">Sociologia</option>
-              <option value="Tópicos de Ciências Humanas">Tópicos de Ciências Humanas</option>
+              <option value="Topicos de Ciencias Humanas">Topicos de Ciencias Humanas</option>
               <option value="Inglês">Inglês</option>
               <option value="Espanhol">Espanhol</option>
-              <option value="Oratória">Oratória</option>
-              <option value="Desenvolvimento Web (1 Á 3)">Desenvolvimento Web (1 Á 3)</option>
-              <option value="Introdução à Computação">Introdução à Computação</option>
+              <option value="Oratoria">Oratoria</option>
+              <option value="ArtDesenvolvimento Web (1 Á 3)es">Desenvolvimento Web (1 Á 3)</option>
+              <option value="Introdução a Computação">Introdução a Computação</option>
               <option value="Programação (1 Á 2)">Programação (1 Á 2)</option>
-              <option value="Desenvolvimento para Dispositivos Móveis">Desenvolvimento para Dispositivos Móveis</option>
-              <option value="Matemática Aplicada">Matemática Aplicada</option>
-              <option value="Metodologia Científica">Metodologia Científica</option>
-              <option value="Redes para Computação">Redes para Computação</option>
-              <option value="Banco de Dados">Banco de Dados</option>
+              <option value="Desenvolvimento para Dispositivos Moveis">Desenvolvimento para Dispositivos Moveis</option>
+              <option value="Matematica Aplicada">Matematica Aplicada</option>
+              <option value="Metodologia CIentifica">Metodologia CIentifica</option>
+              <option value="Redes Para Computação">Redes Para Computação</option>
+              <option value="Banco De Dados">Banco De Dados</option>
             </select>
           </div>
         )}

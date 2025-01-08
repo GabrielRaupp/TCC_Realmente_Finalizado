@@ -24,13 +24,18 @@ function Home() {
         'mudar fundo': () => {
           const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
           document.body.style.backgroundColor = color;
-          setOutput(`Fundo alterado para ${color}`);
+          setOutput(`Fundo alterado para a cor ${color}`);
         },
         'mostrar mensagem': () => {
           setOutput('Você está usando o IntelAgend!');
         },
         'ajuda': () => {
-          setOutput('Comandos disponíveis: criar conta, mudar fundo, mostrar mensagem.');
+          setOutput(
+            'Comandos disponíveis: criar conta, mudar fundo, mostrar mensagem, ajuda.'
+          );
+        },
+        'qual é o meu nome': () => {
+          setOutput('Seu nome ainda não foi configurado. Cadastre-se!');
         },
       };
 
@@ -42,16 +47,20 @@ function Home() {
         if (command) {
           actions[command]();
         } else {
-          setOutput(`Comando não reconhecido: "${transcript}"`);
+          setOutput(
+            `Comando não reconhecido: "${transcript}". Diga "ajuda" para obter os comandos disponíveis.`
+          );
         }
       };
 
       recognitionInstance.onerror = (event) => {
-        setOutput(`Erro: ${event.error}`);
+        setOutput(`Erro de reconhecimento de voz: ${event.error}`);
       };
 
       recognitionInstance.onend = () => {
-        setOutput('Reconhecimento finalizado. Clique novamente para falar.');
+        setOutput((prevOutput) =>
+          `${prevOutput}\nReconhecimento finalizado. Clique no botão para tentar novamente.`
+        );
       };
     } else {
       setOutput('Seu navegador não suporta reconhecimento de voz.');
